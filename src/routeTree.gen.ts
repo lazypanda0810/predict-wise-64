@@ -15,9 +15,14 @@ import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
+import { Route as DashboardStudentsRouteImport } from './routes/dashboard.students'
+import { Route as DashboardSettingsRouteImport } from './routes/dashboard.settings'
+import { Route as DashboardReportsRouteImport } from './routes/dashboard.reports'
 import { Route as DashboardRecommendationsRouteImport } from './routes/dashboard.recommendations'
+import { Route as DashboardProfileRouteImport } from './routes/dashboard.profile'
 import { Route as DashboardPredictionRouteImport } from './routes/dashboard.prediction'
 import { Route as DashboardExplainableAiRouteImport } from './routes/dashboard.explainable-ai'
+import { Route as DashboardAnalyticsRouteImport } from './routes/dashboard.analytics'
 
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
@@ -49,12 +54,32 @@ const DashboardIndexRoute = DashboardIndexRouteImport.update({
   path: '/',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardStudentsRoute = DashboardStudentsRouteImport.update({
+  id: '/students',
+  path: '/students',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardSettingsRoute = DashboardSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardReportsRoute = DashboardReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const DashboardRecommendationsRoute =
   DashboardRecommendationsRouteImport.update({
     id: '/recommendations',
     path: '/recommendations',
     getParentRoute: () => DashboardRoute,
   } as any)
+const DashboardProfileRoute = DashboardProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const DashboardPredictionRoute = DashboardPredictionRouteImport.update({
   id: '/prediction',
   path: '/prediction',
@@ -65,6 +90,11 @@ const DashboardExplainableAiRoute = DashboardExplainableAiRouteImport.update({
   path: '/explainable-ai',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardAnalyticsRoute = DashboardAnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
+  getParentRoute: () => DashboardRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -72,9 +102,14 @@ export interface FileRoutesByFullPath {
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/dashboard/analytics': typeof DashboardAnalyticsRoute
   '/dashboard/explainable-ai': typeof DashboardExplainableAiRoute
   '/dashboard/prediction': typeof DashboardPredictionRoute
+  '/dashboard/profile': typeof DashboardProfileRoute
   '/dashboard/recommendations': typeof DashboardRecommendationsRoute
+  '/dashboard/reports': typeof DashboardReportsRoute
+  '/dashboard/settings': typeof DashboardSettingsRoute
+  '/dashboard/students': typeof DashboardStudentsRoute
   '/dashboard/': typeof DashboardIndexRoute
 }
 export interface FileRoutesByTo {
@@ -82,9 +117,14 @@ export interface FileRoutesByTo {
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/dashboard/analytics': typeof DashboardAnalyticsRoute
   '/dashboard/explainable-ai': typeof DashboardExplainableAiRoute
   '/dashboard/prediction': typeof DashboardPredictionRoute
+  '/dashboard/profile': typeof DashboardProfileRoute
   '/dashboard/recommendations': typeof DashboardRecommendationsRoute
+  '/dashboard/reports': typeof DashboardReportsRoute
+  '/dashboard/settings': typeof DashboardSettingsRoute
+  '/dashboard/students': typeof DashboardStudentsRoute
   '/dashboard': typeof DashboardIndexRoute
 }
 export interface FileRoutesById {
@@ -94,9 +134,14 @@ export interface FileRoutesById {
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/dashboard/analytics': typeof DashboardAnalyticsRoute
   '/dashboard/explainable-ai': typeof DashboardExplainableAiRoute
   '/dashboard/prediction': typeof DashboardPredictionRoute
+  '/dashboard/profile': typeof DashboardProfileRoute
   '/dashboard/recommendations': typeof DashboardRecommendationsRoute
+  '/dashboard/reports': typeof DashboardReportsRoute
+  '/dashboard/settings': typeof DashboardSettingsRoute
+  '/dashboard/students': typeof DashboardStudentsRoute
   '/dashboard/': typeof DashboardIndexRoute
 }
 export interface FileRouteTypes {
@@ -107,9 +152,14 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/login'
     | '/register'
+    | '/dashboard/analytics'
     | '/dashboard/explainable-ai'
     | '/dashboard/prediction'
+    | '/dashboard/profile'
     | '/dashboard/recommendations'
+    | '/dashboard/reports'
+    | '/dashboard/settings'
+    | '/dashboard/students'
     | '/dashboard/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -117,9 +167,14 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/login'
     | '/register'
+    | '/dashboard/analytics'
     | '/dashboard/explainable-ai'
     | '/dashboard/prediction'
+    | '/dashboard/profile'
     | '/dashboard/recommendations'
+    | '/dashboard/reports'
+    | '/dashboard/settings'
+    | '/dashboard/students'
     | '/dashboard'
   id:
     | '__root__'
@@ -128,9 +183,14 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/login'
     | '/register'
+    | '/dashboard/analytics'
     | '/dashboard/explainable-ai'
     | '/dashboard/prediction'
+    | '/dashboard/profile'
     | '/dashboard/recommendations'
+    | '/dashboard/reports'
+    | '/dashboard/settings'
+    | '/dashboard/students'
     | '/dashboard/'
   fileRoutesById: FileRoutesById
 }
@@ -186,11 +246,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardIndexRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/dashboard/students': {
+      id: '/dashboard/students'
+      path: '/students'
+      fullPath: '/dashboard/students'
+      preLoaderRoute: typeof DashboardStudentsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/settings': {
+      id: '/dashboard/settings'
+      path: '/settings'
+      fullPath: '/dashboard/settings'
+      preLoaderRoute: typeof DashboardSettingsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/reports': {
+      id: '/dashboard/reports'
+      path: '/reports'
+      fullPath: '/dashboard/reports'
+      preLoaderRoute: typeof DashboardReportsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/dashboard/recommendations': {
       id: '/dashboard/recommendations'
       path: '/recommendations'
       fullPath: '/dashboard/recommendations'
       preLoaderRoute: typeof DashboardRecommendationsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/profile': {
+      id: '/dashboard/profile'
+      path: '/profile'
+      fullPath: '/dashboard/profile'
+      preLoaderRoute: typeof DashboardProfileRouteImport
       parentRoute: typeof DashboardRoute
     }
     '/dashboard/prediction': {
@@ -207,20 +295,37 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardExplainableAiRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/dashboard/analytics': {
+      id: '/dashboard/analytics'
+      path: '/analytics'
+      fullPath: '/dashboard/analytics'
+      preLoaderRoute: typeof DashboardAnalyticsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
   }
 }
 
 interface DashboardRouteChildren {
+  DashboardAnalyticsRoute: typeof DashboardAnalyticsRoute
   DashboardExplainableAiRoute: typeof DashboardExplainableAiRoute
   DashboardPredictionRoute: typeof DashboardPredictionRoute
+  DashboardProfileRoute: typeof DashboardProfileRoute
   DashboardRecommendationsRoute: typeof DashboardRecommendationsRoute
+  DashboardReportsRoute: typeof DashboardReportsRoute
+  DashboardSettingsRoute: typeof DashboardSettingsRoute
+  DashboardStudentsRoute: typeof DashboardStudentsRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
+  DashboardAnalyticsRoute: DashboardAnalyticsRoute,
   DashboardExplainableAiRoute: DashboardExplainableAiRoute,
   DashboardPredictionRoute: DashboardPredictionRoute,
+  DashboardProfileRoute: DashboardProfileRoute,
   DashboardRecommendationsRoute: DashboardRecommendationsRoute,
+  DashboardReportsRoute: DashboardReportsRoute,
+  DashboardSettingsRoute: DashboardSettingsRoute,
+  DashboardStudentsRoute: DashboardStudentsRoute,
   DashboardIndexRoute: DashboardIndexRoute,
 }
 
