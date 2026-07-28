@@ -15,6 +15,7 @@ import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
+import { Route as DashboardRecommendationsRouteImport } from './routes/dashboard.recommendations'
 import { Route as DashboardPredictionRouteImport } from './routes/dashboard.prediction'
 import { Route as DashboardExplainableAiRouteImport } from './routes/dashboard.explainable-ai'
 
@@ -48,6 +49,12 @@ const DashboardIndexRoute = DashboardIndexRouteImport.update({
   path: '/',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardRecommendationsRoute =
+  DashboardRecommendationsRouteImport.update({
+    id: '/recommendations',
+    path: '/recommendations',
+    getParentRoute: () => DashboardRoute,
+  } as any)
 const DashboardPredictionRoute = DashboardPredictionRouteImport.update({
   id: '/prediction',
   path: '/prediction',
@@ -67,6 +74,7 @@ export interface FileRoutesByFullPath {
   '/register': typeof RegisterRoute
   '/dashboard/explainable-ai': typeof DashboardExplainableAiRoute
   '/dashboard/prediction': typeof DashboardPredictionRoute
+  '/dashboard/recommendations': typeof DashboardRecommendationsRoute
   '/dashboard/': typeof DashboardIndexRoute
 }
 export interface FileRoutesByTo {
@@ -76,6 +84,7 @@ export interface FileRoutesByTo {
   '/register': typeof RegisterRoute
   '/dashboard/explainable-ai': typeof DashboardExplainableAiRoute
   '/dashboard/prediction': typeof DashboardPredictionRoute
+  '/dashboard/recommendations': typeof DashboardRecommendationsRoute
   '/dashboard': typeof DashboardIndexRoute
 }
 export interface FileRoutesById {
@@ -87,6 +96,7 @@ export interface FileRoutesById {
   '/register': typeof RegisterRoute
   '/dashboard/explainable-ai': typeof DashboardExplainableAiRoute
   '/dashboard/prediction': typeof DashboardPredictionRoute
+  '/dashboard/recommendations': typeof DashboardRecommendationsRoute
   '/dashboard/': typeof DashboardIndexRoute
 }
 export interface FileRouteTypes {
@@ -99,6 +109,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/dashboard/explainable-ai'
     | '/dashboard/prediction'
+    | '/dashboard/recommendations'
     | '/dashboard/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -108,6 +119,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/dashboard/explainable-ai'
     | '/dashboard/prediction'
+    | '/dashboard/recommendations'
     | '/dashboard'
   id:
     | '__root__'
@@ -118,6 +130,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/dashboard/explainable-ai'
     | '/dashboard/prediction'
+    | '/dashboard/recommendations'
     | '/dashboard/'
   fileRoutesById: FileRoutesById
 }
@@ -173,6 +186,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardIndexRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/dashboard/recommendations': {
+      id: '/dashboard/recommendations'
+      path: '/recommendations'
+      fullPath: '/dashboard/recommendations'
+      preLoaderRoute: typeof DashboardRecommendationsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/dashboard/prediction': {
       id: '/dashboard/prediction'
       path: '/prediction'
@@ -193,12 +213,14 @@ declare module '@tanstack/react-router' {
 interface DashboardRouteChildren {
   DashboardExplainableAiRoute: typeof DashboardExplainableAiRoute
   DashboardPredictionRoute: typeof DashboardPredictionRoute
+  DashboardRecommendationsRoute: typeof DashboardRecommendationsRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardExplainableAiRoute: DashboardExplainableAiRoute,
   DashboardPredictionRoute: DashboardPredictionRoute,
+  DashboardRecommendationsRoute: DashboardRecommendationsRoute,
   DashboardIndexRoute: DashboardIndexRoute,
 }
 
