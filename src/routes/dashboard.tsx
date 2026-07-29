@@ -44,11 +44,9 @@ function DashboardLayout() {
             <div className="flex min-w-0 items-center gap-2">
               <SidebarTrigger />
               <span className="truncate text-sm font-medium">{crumb}</span>
-              {user.role === "guest" && (
-                <Badge variant="outline" className="shrink-0 border-warning/40 text-warning">
-                  Guest — read only
-                </Badge>
-              )}
+              <Badge variant="outline" className="hidden shrink-0 capitalize sm:inline-flex">
+                {user.role}
+              </Badge>
             </div>
             <div className="flex items-center gap-2">
               <ThemeToggle />

@@ -137,9 +137,7 @@ function PredictionPage() {
       confidence: Math.min(98, 74 + Math.round(clamped / 6)),
     });
     setLoading(false);
-    toast.success(
-      user?.role === "guest" ? "Prediction ready — guest results are not saved" : "Prediction saved to history",
-    );
+    toast.success("Prediction saved to history");
   };
 
   return (
@@ -265,11 +263,9 @@ function PredictionPage() {
               ))}
             </div>
 
-            {user?.role === "guest" && (
-              <p className="mt-5 rounded-lg border border-warning/30 bg-warning/10 p-3 text-xs text-warning">
-                Guest mode: this result is not saved to prediction history.
-              </p>
-            )}
+            <p className="mt-5 rounded-lg border border-border bg-muted/40 p-3 text-xs text-muted-foreground">
+              Saved to {user?.name ?? "your"} prediction history.
+            </p>
           </motion.div>
         )}
       </div>

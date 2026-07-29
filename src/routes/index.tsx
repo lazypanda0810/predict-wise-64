@@ -116,8 +116,8 @@ const FAQS = [
     a: "Every prediction ships with feature importance, SHAP-style contributions and a plain-language summary of what pushed the result up or down.",
   },
   {
-    q: "Can I try it without an account?",
-    a: "Yes. Guest access unlocks the dashboard, a sample prediction, explainability and recommendations — but records cannot be saved.",
+    q: "Do I need an account?",
+    a: "Yes — create a free account in seconds. Your workspace, predictions and reports are tied to your profile so history is always available.",
   },
   {
     q: "Which roles are supported?",
@@ -126,8 +126,7 @@ const FAQS = [
 ];
 
 function Landing() {
-  const navigate = useNavigate();
-  const { loginAsGuest } = useAuth();
+  const { user } = useAuth();
 
   return (
     <div className="min-h-screen bg-background">
@@ -154,21 +153,24 @@ function Landing() {
                 success.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
-                <Button
-                  size="lg"
-                  onClick={() => {
-                    loginAsGuest();
-                    navigate({ to: "/dashboard" });
-                  }}
-                >
-                  Try Demo <ArrowRight className="ml-1 size-4" />
-                </Button>
-                <Button asChild size="lg" variant="outline">
-                  <Link to="/login">Login</Link>
-                </Button>
-                <Button asChild size="lg" variant="ghost">
-                  <Link to="/register">Register</Link>
-                </Button>
+                {user ? (
+                  <Button asChild size="lg">
+                    <Link to="/dashboard">
+                      Open dashboard <ArrowRight className="ml-1 size-4" />
+                    </Link>
+                  </Button>
+                ) : (
+                  <>
+                    <Button asChild size="lg">
+                      <Link to="/register">
+                        Create free account <ArrowRight className="ml-1 size-4" />
+                      </Link>
+                    </Button>
+                    <Button asChild size="lg" variant="outline">
+                      <Link to="/login">Sign in</Link>
+                    </Button>
+                  </>
+                )}
               </div>
               <dl className="mt-10 grid max-w-md grid-cols-3 gap-4">
                 {[
