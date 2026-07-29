@@ -3,15 +3,20 @@ import { BrainCircuit, Menu } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
-
-const links = [
-  { to: "/", label: "Home" },
-  { to: "/dashboard", label: "Dashboard" },
-  { to: "/login", label: "Login" },
-];
+import { useAuth } from "@/lib/auth";
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
+  const { user } = useAuth();
+  const links = user
+    ? [
+        { to: "/", label: "Home" },
+        { to: "/dashboard", label: "Dashboard" },
+      ]
+    : [
+        { to: "/", label: "Home" },
+        { to: "/login", label: "Sign in" },
+      ];
   return (
     <header className="sticky top-0 z-40 border-b border-border/70 bg-background/80 backdrop-blur-xl">
       <div className="mx-auto grid max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-4 py-3 sm:px-6">
@@ -37,7 +42,9 @@ export function SiteHeader() {
           </nav>
           <ThemeToggle />
           <Button asChild size="sm" className="hidden sm:inline-flex">
-            <Link to="/register">Get started</Link>
+            <Link to={user ? "/dashboard" : "/register"}>
+              {user ? "Open dashboard" : "Get started"}
+            </Link>
           </Button>
           <Button
             variant="ghost"
