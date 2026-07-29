@@ -35,11 +35,11 @@ export const Route = createFileRoute("/")({
         content:
           "Predict student academic performance, understand every prediction with explainable AI, and act on personalized recommendations.",
       },
-      { property: "og:title", content: "Predict Student Performance using Explainable AI" },
+      { property: "og:title", content: "EduPredict.ai — Predict Student Performance with Explainable AI" },
       {
         property: "og:description",
         content:
-          "Empowering teachers and institutions with intelligent insights for better academic success.",
+          "Predict student academic performance, understand every prediction with explainable AI, and act on personalized recommendations.",
       },
     ],
   }),

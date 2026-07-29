@@ -80,21 +80,25 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "EduPredict.ai — Explainable Student Performance AI" },
+      { title: "EduPredict.ai — Predict Student Performance with Explainable AI" },
       {
         name: "description",
         content:
-          "Predict student academic performance with explainable AI and personalized recommendations.",
+          "Predict student academic performance, understand every prediction with explainable AI, and act on personalized recommendations.",
       },
-      { property: "og:title", content: "EduPredict.ai — Explainable Student Performance AI" },
+      { property: "og:title", content: "EduPredict.ai — Predict Student Performance with Explainable AI" },
       {
         property: "og:description",
         content:
-          "Predict student academic performance with explainable AI and personalized recommendations.",
+          "Predict student academic performance, understand every prediction with explainable AI, and act on personalized recommendations.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "EduPredict.ai — Predict Student Performance with Explainable AI" },
+      { name: "twitter:description", content: "Predict student academic performance, understand every prediction with explainable AI, and act on personalized recommendations." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/7c1704fe-b81c-466d-94a2-43e34b7b76e6/id-preview-147c31ef--aa1b9a04-c931-48db-889c-7785ce7df391.lovable.app-1785259141344.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/7c1704fe-b81c-466d-94a2-43e34b7b76e6/id-preview-147c31ef--aa1b9a04-c931-48db-889c-7785ce7df391.lovable.app-1785259141344.png" },
     ],
     links: [
       {
