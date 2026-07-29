@@ -13,7 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useAuth } from "@/lib/auth";
+import { useAuth, type Role } from "@/lib/auth";
 import { useState } from "react";
 
 export const Route = createFileRoute("/register")({
@@ -38,7 +38,7 @@ interface FormValues {
 function RegisterPage() {
   const navigate = useNavigate();
   const { register: signUp } = useAuth();
-  const [role, setRole] = useState("student");
+  const [role, setRole] = useState<Role>("student");
   const {
     register,
     handleSubmit,
@@ -47,9 +47,13 @@ function RegisterPage() {
   } = useForm<FormValues>();
 
   const onSubmit = async (v: FormValues) => {
-    await signUp(v.name, v.email, v.password);
-    toast.success("Account created successfully");
-    navigate({ to: "/dashboard" });
+    try {
+      const user = await signUp(v.name, v.email, v.password, role);
+      toast.success(`Account created — welcome, ${user.name}`);
+      navigate({ to: "/dashboard" });
+    } catch (e) {
+      toast.error((e as Error).message);
+    }
   };
 
   return (
@@ -65,10 +69,17 @@ function RegisterPage() {
         </>
       }
     >
-      <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4">
+      <form onSubmit={handleSubmit(onSubmit)} className="surface-card grid gap-4 p-5 sm:p-6">
         <div className="grid gap-2">
           <Label htmlFor="name">Full name</Label>
-          <Input id="name" {...register("name", { required: "Name is required", maxLength: 80 })} />
+          <Input
+            id="name"
+            placeholder="Aarav Sharma"
+            {...register("name", {
+              required: "Name is required",
+              maxLength: { value: 80, message: "Name is too long" },
+            })}
+          />
           {errors.name && <p className="text-xs text-destructive">{errors.name.message}</p>}
         </div>
         <div className="grid gap-2">
@@ -76,8 +87,11 @@ function RegisterPage() {
           <Input
             id="email"
             type="email"
+            placeholder="you@school.edu"
+            autoComplete="email"
             {...register("email", {
               required: "Email is required",
+              maxLength: { value: 255, message: "Email is too long" },
               pattern: { value: /^\S+@\S+\.\S+$/, message: "Enter a valid email" },
             })}
           />
@@ -85,7 +99,7 @@ function RegisterPage() {
         </div>
         <div className="grid gap-2">
           <Label>Role</Label>
-          <Select value={role} onValueChange={setRole}>
+          <Select value={role} onValueChange={(v) => setRole(v as Role)}>
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
