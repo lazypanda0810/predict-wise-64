@@ -1,12 +1,13 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { toast } from "sonner";
-import { CheckCircle2, Loader2, Mail } from "lucide-react";
+import { CheckCircle2, KeyRound, Loader2 } from "lucide-react";
 import { AuthShell } from "@/components/auth-shell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useAuth } from "@/lib/auth";
 
 export const Route = createFileRoute("/forgot-password")({
   head: () => ({
@@ -21,38 +22,48 @@ export const Route = createFileRoute("/forgot-password")({
 });
 
 function ForgotPasswordPage() {
-  const [sent, setSent] = useState(false);
+  const navigate = useNavigate();
+  const { resetPassword } = useAuth();
+  const [done, setDone] = useState(false);
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors, isSubmitting },
-  } = useForm<{ email: string }>();
+  } = useForm<{ email: string; password: string; confirm: string }>();
 
   return (
     <AuthShell
-      title="Forgot password"
-      subtitle="We'll email you a secure reset link."
+      title="Reset your password"
+      subtitle="Confirm your email and choose a new password."
       footer={
         <Link to="/login" className="font-medium text-primary hover:underline">
           Back to sign in
         </Link>
       }
     >
-      {sent ? (
+      {done ? (
         <div className="surface-card flex flex-col items-center p-8 text-center">
           <CheckCircle2 className="size-10 animate-in zoom-in text-accent" />
-          <p className="mt-4 font-medium">Reset link sent</p>
+          <p className="mt-4 font-medium">Password updated</p>
           <p className="mt-2 text-sm text-muted-foreground">
-            Check your inbox for instructions. The link expires in 30 minutes.
+            You can now sign in with your new password.
           </p>
+          <Button className="mt-5" onClick={() => navigate({ to: "/login" })}>
+            Go to sign in
+          </Button>
         </div>
       ) : (
         <form
-          className="grid gap-4"
-          onSubmit={handleSubmit(async () => {
-            await new Promise((r) => setTimeout(r, 700));
-            setSent(true);
-            toast.success("Reset link sent");
+          className="surface-card grid gap-4 p-5 sm:p-6"
+          onSubmit={handleSubmit(async (v) => {
+            try {
+              await resetPassword(v.email, v.password);
+              setDone(true);
+              toast.success("Password updated");
+            } catch (e) {
+              toast.error((e as Error).message);
+            }
           })}
         >
           <div className="grid gap-2">
@@ -60,6 +71,7 @@ function ForgotPasswordPage() {
             <Input
               id="email"
               type="email"
+              placeholder="you@school.edu"
               {...register("email", {
                 required: "Email is required",
                 pattern: { value: /^\S+@\S+\.\S+$/, message: "Enter a valid email" },
@@ -67,13 +79,40 @@ function ForgotPasswordPage() {
             />
             {errors.email && <p className="text-xs text-destructive">{errors.email.message}</p>}
           </div>
+          <div className="grid gap-2">
+            <Label htmlFor="password">New password</Label>
+            <Input
+              id="password"
+              type="password"
+              autoComplete="new-password"
+              {...register("password", {
+                required: "Password is required",
+                minLength: { value: 6, message: "Minimum 6 characters" },
+              })}
+            />
+            {errors.password && (
+              <p className="text-xs text-destructive">{errors.password.message}</p>
+            )}
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="confirm">Confirm new password</Label>
+            <Input
+              id="confirm"
+              type="password"
+              autoComplete="new-password"
+              {...register("confirm", {
+                validate: (v) => v === watch("password") || "Passwords do not match",
+              })}
+            />
+            {errors.confirm && <p className="text-xs text-destructive">{errors.confirm.message}</p>}
+          </div>
           <Button type="submit" className="w-full" disabled={isSubmitting}>
             {isSubmitting ? (
               <Loader2 className="mr-2 size-4 animate-spin" />
             ) : (
-              <Mail className="mr-2 size-4" />
+              <KeyRound className="mr-2 size-4" />
             )}
-            Send reset link
+            Update password
           </Button>
         </form>
       )}
