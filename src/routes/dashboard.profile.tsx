@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -20,7 +21,34 @@ export const Route = createFileRoute("/dashboard/profile")({
 });
 
 function ProfilePage() {
-  const { user } = useAuth();
+  const { user, updateProfile, resetPassword } = useAuth();
+  const [name, setName] = useState(user?.name ?? "");
+  const [password, setPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  const onSave = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const trimmed = name.trim();
+    if (!trimmed) return toast.error("Name cannot be empty");
+    if (password || confirm) {
+      if (password.length < 6) return toast.error("Password must be at least 6 characters");
+      if (password !== confirm) return toast.error("Passwords do not match");
+    }
+    setSaving(true);
+    try {
+      updateProfile({ name: trimmed });
+      if (password && user) await resetPassword(user.email, password);
+      setPassword("");
+      setConfirm("");
+      toast.success(password ? "Profile and password updated" : "Profile updated");
+    } catch (err) {
+      toast.error((err as Error).message);
+    } finally {
+      setSaving(false);
+    }
+  };
+
   return (
     <div className="grid max-w-2xl gap-5">
       <div className="surface-card p-6">
@@ -38,31 +66,42 @@ function ProfilePage() {
           </div>
         </div>
         <Separator className="my-6" />
-        <form
-          className="grid gap-4 sm:grid-cols-2"
-          onSubmit={(e) => {
-            e.preventDefault();
-            toast.success("Profile updated");
-          }}
-        >
+        <form className="grid gap-4 sm:grid-cols-2" onSubmit={onSave}>
           <div className="grid gap-2">
             <Label htmlFor="fullname">Full name</Label>
-            <Input id="fullname" defaultValue={user?.name} maxLength={80} />
+            <Input
+              id="fullname"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              maxLength={80}
+            />
           </div>
           <div className="grid gap-2">
             <Label htmlFor="mail">Email</Label>
-            <Input id="mail" type="email" defaultValue={user?.email} />
+            <Input id="mail" type="email" value={user?.email ?? ""} readOnly disabled />
           </div>
           <div className="grid gap-2">
             <Label htmlFor="pw">New password</Label>
-            <Input id="pw" type="password" placeholder="••••••" />
+            <Input
+              id="pw"
+              type="password"
+              placeholder="••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
           </div>
           <div className="grid gap-2">
             <Label htmlFor="pw2">Confirm password</Label>
-            <Input id="pw2" type="password" placeholder="••••••" />
+            <Input
+              id="pw2"
+              type="password"
+              placeholder="••••••"
+              value={confirm}
+              onChange={(e) => setConfirm(e.target.value)}
+            />
           </div>
-          <Button type="submit" className="sm:col-span-2 sm:w-fit">
-            Save changes
+          <Button type="submit" disabled={saving} className="sm:col-span-2 sm:w-fit">
+            {saving ? "Saving…" : "Save changes"}
           </Button>
         </form>
       </div>

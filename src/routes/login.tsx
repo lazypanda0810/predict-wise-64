@@ -2,13 +2,12 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Loader2, LogIn } from "lucide-react";
+import { Eye, EyeOff, Loader2, LogIn, ShieldCheck } from "lucide-react";
 import { AuthShell } from "@/components/auth-shell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
-import { useAuth, type Role } from "@/lib/auth";
+import { useAuth } from "@/lib/auth";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
@@ -29,8 +28,8 @@ interface FormValues {
 
 function LoginPage() {
   const navigate = useNavigate();
-  const { login, loginDemo, loginAsGuest } = useAuth();
-  const [pending, setPending] = useState<string | null>(null);
+  const { login } = useAuth();
+  const [show, setShow] = useState(false);
   const {
     register,
     handleSubmit,
@@ -47,15 +46,6 @@ function LoginPage() {
     }
   };
 
-  const quick = (fn: () => void, key: string, message: string) => {
-    setPending(key);
-    setTimeout(() => {
-      fn();
-      toast.success(message);
-      navigate({ to: "/dashboard" });
-    }, 500);
-  };
-
   return (
     <AuthShell
       title="Welcome back"
@@ -69,15 +59,17 @@ function LoginPage() {
         </>
       }
     >
-      <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4">
+      <form onSubmit={handleSubmit(onSubmit)} className="surface-card grid gap-4 p-5 sm:p-6">
         <div className="grid gap-2">
           <Label htmlFor="email">Email</Label>
           <Input
             id="email"
             type="email"
-            placeholder="student@demo.com"
+            placeholder="you@school.edu"
+            autoComplete="email"
             {...register("email", {
               required: "Email is required",
+              maxLength: { value: 255, message: "Email is too long" },
               pattern: { value: /^\S+@\S+\.\S+$/, message: "Enter a valid email" },
             })}
           />
@@ -90,15 +82,27 @@ function LoginPage() {
               Forgot password?
             </Link>
           </div>
-          <Input
-            id="password"
-            type="password"
-            placeholder="••••••"
-            {...register("password", {
-              required: "Password is required",
-              minLength: { value: 6, message: "Minimum 6 characters" },
-            })}
-          />
+          <div className="relative">
+            <Input
+              id="password"
+              type={show ? "text" : "password"}
+              placeholder="••••••••"
+              autoComplete="current-password"
+              className="pr-10"
+              {...register("password", {
+                required: "Password is required",
+                minLength: { value: 6, message: "Minimum 6 characters" },
+              })}
+            />
+            <button
+              type="button"
+              onClick={() => setShow((s) => !s)}
+              aria-label={show ? "Hide password" : "Show password"}
+              className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md p-1.5 text-muted-foreground transition-colors hover:text-foreground"
+            >
+              {show ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+            </button>
+          </div>
           {errors.password && <p className="text-xs text-destructive">{errors.password.message}</p>}
         </div>
         <Button type="submit" disabled={isSubmitting} className="w-full">
@@ -107,63 +111,11 @@ function LoginPage() {
         </Button>
       </form>
 
-      <div className="my-6 flex items-center gap-3">
-        <Separator className="flex-1" />
-        <span className="text-xs uppercase tracking-widest text-muted-foreground">or</span>
-        <Separator className="flex-1" />
-      </div>
-
-      <div className="grid gap-3">
-        <Button
-          variant="outline"
-          className="w-full"
-          disabled={pending === "google"}
-          onClick={() => quick(() => loginDemo("student"), "google", "Signed in with Google")}
-        >
-          {pending === "google" ? (
-            <Loader2 className="mr-2 size-4 animate-spin" />
-          ) : (
-            <GoogleIcon />
-          )}
-          Continue with Google
-        </Button>
-        <div className="grid grid-cols-3 gap-2">
-          {(["student", "teacher", "admin"] as Exclude<Role, "guest">[]).map((r) => (
-            <Button
-              key={r}
-              variant="secondary"
-              size="sm"
-              disabled={pending === r}
-              onClick={() => quick(() => loginDemo(r), r, `Demo ${r} session started`)}
-            >
-              {pending === r ? <Loader2 className="size-4 animate-spin" /> : `Demo ${r}`}
-            </Button>
-          ))}
-        </div>
-        <Button
-          variant="ghost"
-          className="w-full"
-          disabled={pending === "guest"}
-          onClick={() => quick(loginAsGuest, "guest", "Exploring as guest — records cannot be saved")}
-        >
-          {pending === "guest" && <Loader2 className="mr-2 size-4 animate-spin" />}
-          Continue as guest
-        </Button>
-      </div>
-
-      <div className="mt-6 rounded-xl border border-border bg-muted/40 p-4 text-xs text-muted-foreground">
-        <p className="font-medium text-foreground">Demo credentials</p>
-        <p className="mt-2">student@demo.com · teacher@demo.com · admin@demo.com</p>
-        <p>Password for all: 123456</p>
-      </div>
+      <p className="mt-5 flex items-start gap-2 text-xs text-muted-foreground">
+        <ShieldCheck className="mt-0.5 size-4 shrink-0 text-accent" />
+        Your credentials are stored securely on this device — passwords are hashed and never sent
+        anywhere.
+      </p>
     </AuthShell>
-  );
-}
-
-function GoogleIcon() {
-  return (
-    <svg className="mr-2 size-4" viewBox="0 0 24 24" aria-hidden>
-      <path fill="#EA4335" d="M12 10.2v3.9h5.5c-.24 1.4-1.7 4.1-5.5 4.1a6.2 6.2 0 1 1 0-12.4c1.9 0 3.2.8 3.9 1.5l2.7-2.6C16.9 3 14.7 2 12 2a10 10 0 1 0 0 20c5.8 0 9.6-4 9.6-9.7 0-.7-.1-1.2-.2-1.7z" />
-    </svg>
   );
 }
